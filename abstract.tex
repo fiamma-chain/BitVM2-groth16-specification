@@ -1,10 +1,7 @@
 \begin{abstract}
-    We designed the architecture for OlaVM, a customized ZKVM, with ambitions to become fully compatible with the existing Ethereum ecosystem, providing seamless migration for projects, enabled at compiler level rather than circuit constraint level. The OlaVM instruction set design strikes a graceful balance between trade-offs in execution trace size and amount of constraints. Utilizing a register-based VM, the overall execution traces of OlaVM are much smaller than that of a stack-based VM. The design of OlaVM revolves around the following main features:
-    (1) A custom virtual machine with a simplified instruction set designed to improve the execution process and ZK verification.
-    (2) Register-based structure, which greatly reduces memory access overhead during the execution process, effectively reducing the scale of the entire execution trace.
-    (3) Finite Field Word, the Word of OlaVM is a field element, the only type of computations that can be performed are field operations, which enables OlaVM to obtain a set of concise state transition constraints.
-    (4) Modular design, dividing the entire execution trace into multiple sub traces based on operation type and processing them separately.
-    (5) FPGA acceleration, utilizing the FPGA acceleration logic of the main calculation module of the ZK algorithm.
-    (6) Zero Knowledge without FFT, eliminating the most computationally expensive module, FFT, in implementing ZK calculations on FPGAs.
-    (7) Other tricks, improving computational efficiency of OlaVM, and of ZK verification through non-deterministic features.
+    In this paper, we will show how we implement the Groth16 verification in Bitcoin, we are grateful to all the members who contribute to BitVM2 repository,
+    such as Robin, Weikeng, and Zerosync team, etc. Based on this paper, we hope:
+    (1). Our design and implementment could be reviewed by BitVM2 community;
+    (2). Let more developer and researchers to know the details that how BitVM2 works with Groth16;
+    (3). Accelerating the process of BitVM2 with whole community to ensure it could be adopted in production in a safe way;
 \end{abstract}
