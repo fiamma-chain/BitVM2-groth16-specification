@@ -1,15 +1,187 @@
-\subsection{Our Work}
+\subsection{On-proving-pairing}
 
-Designing and implementing a fully functional ZKEVM is a very daunting and challenging task. We have thoroughly studied and followed the progress of other teams in this space, and mastered how to design an efficient ZK-friendly EVM.
+This is a efficient ways to prove correctness of elliptic curve pairing relations, the algorithm shows in page 25:
 
-OlaVM is designed to have strong EVM compatibility without compromising its ZK-friendliness. To maintain its ZK-friendliness we've defined a simple instruction set, which makes the underlying state transition constraints very concise. In addition to this, OlaVM is a register-based VM, which significantly reduces the execution trace (avoiding intensive PUSH and POP operations compared to a stack-based VM). The Word of OlaVM is an element defined in a finite field, that's how we are able to obtain a simplified set of instructions. Finally, OlaVM supports some neat tricks to prevent the VM itself from performing complex calculations, reducing the execution trace and thereby improving overall ZK efficiency. We have defined integer calculation logic of uint256 to achieve solid EVM compatibility. In order to reduce the execution trace of integer calculation, we use BLS12-381 curve, which is defined on a 381-bit characteristic finite field.
+Algorithm 9: Multi Miller loop with embedded $c$ exponentiation \newline
 
-In terms of design, based on the technical characteristics described above, OlaVM generates smaller execution traces and more concise state transition constraints, which enables us to achieve better ZK efficiency.
+Input: $\displaystyle A = [(P_1,Q_1), (P_2,Q_2),...,(P_n,Q_n)],c, c^{-1} \in F_{q^k},s \in F_{q^3},P_{Q_j} \leftarrow \mathcal{L}(Q_j)$ \newline
 
-In addition to that we utilize other technical means such as reducing the number of selector polynomials by Combined Selector technology, as well as reducing the constraint scale using Lookup Argument technology, in order to improve ZK efficiency. For detailed principle, please refer to Section \ref{sec:key-technologies}. To further improve ZK efficiency, we have got a ZK hardware acceleration design framework. In order to ensure scalability of the design, we only accelerate the core module in ZK algorithm -- MSM (Multi-Scalar Multiplication), so that our design still applies to other ZK algorithms.
+Output: $\displaystyle 1 \ \ if \prod_{i=0}^{n}e(P_i, Q_i) = 1 $ \newline
 
-OlaVM uses a ZK algorithm without FFT in our design (for detailed principle, please refer to Section \ref{sec:zk-without-fft}), not simply a classic ZK algorithm, such as Halo2 \cite{website:halo2}, Plonk \cite{cryptoeprint:2019/953}, Plonky2 \cite{website:plonky2} and Groth16 \cite{Groth16}. Reasoning behind this is, with ZK algorithms, although FFT/IFFT and MSM calculations occupy most of the execution time of the entire algorithm, due to the computational complexity of FFT being $O(N\log N)$ and the MSM being $O(N/\log N)$ (Do note that at this complexity, a lot of hardware buffers are required), as the circuit size increases, FFT/IFFT will consume more computing resources than MSM (MSM has more multipliers than FFT/IFFT for a single multiplication even if for the bit width).
+(1) assert $\displaystyle c \cdot c^{-1} = 1 $ \newline
 
-It should be noted that compared to the traditional ZK algorithms of R1CS system, such as BCTV14 \cite{ben2014succinct}, Halo \cite{cryptoeprint:2019/1021} and Fractal \cite{Fractal}, current ZK algorithms without FFT based on R1CS system, such as Nova \cite{cryptoeprint:2021/370} and Spartan \cite{Spartan}, has more efficient performance in proving, verifying, recursive performance and so on.
+(2) $\displaystyle f \leftarrow c^(-1), lc \leftarrow 0 $ \newline
 
-We believe that a ZK algorithm without FFT based on Plonkish constraint system will have better performance, although it is not considering optimal now, we will continue studying and researching this, as well as showcasing the hardware acceleration scheme of its main computing module, MSM, in advance.
+(3) Initialize array $T$ such that $\displaystyle T[j] = Q_j $ for each non-fixed point $Q_j$ \newline
+
+(4) for $i$ = $L-2$ to $0$ do \newline
+
+(5) \indent $f$ = $f^2$ \newline
+
+(6) \indent for j=1 to n do \newline
+
+(7) \indent \indent $\displaystyle l \leftarrow P_{Q_j}[lc] $ \newline
+
+(8) \indent \indent $\displaystyle f = f \cdot l.evaluate(P_j) $ \newline 
+
+(9) \indent \indent if $Q_j$ is not fixed then \newline
+
+(10) \indent \indent \indent $\displaystyle T \leftarrow T[j] $ \newline
+
+(11) \indent \indent \indent assert $\displaystyle l.is_tangent(T) $ \newline
+
+(12) \indent \indent \indent $\displaystyle T[j] = l.double(T) $ \newline
+
+(13) \indent \indent end \newline
+
+(14) \indent \indent if $bit^2 == 1$ then \newline
+
+(15) \indent \indent \indent $\displaystyle f = f \cdot c^{-1}$ if $bit$ == 1 else $\displaystyle f \cdot c$ end \newline
+
+(16) \indent \indent \indent $\displaystyle l \leftarrow P_{Q_j}[lc+1] $ \newline
+
+(17) \indent \indent \indent $\displaystyle f = f \cdot l.evaluate(P_{j})$ \newline
+
+(18) \indent \indent \indent if $Q_j$ is not fixed then \newline
+
+(19) \indent \indent \indent \indent $\displaystyle Q^{'} = Q_j $ if $bit$ == 1 else $\displaystyle -Q_j $ \newline
+
+(20) \indent \indent \indent $\displaystyle T \leftarrow T[j] $ \newline
+
+(21) \indent \indent \indent assert $\displaystyle l.is_line(T, Q^{'}) $ \newline
+
+(22) \indent \indent \indent $\displaystyle T[j] = l.add(T, Q^{'}) $ \newline
+
+(23) \indent \indent \indent end \newline
+
+(24) \indent \indent end \newline
+
+(25) \indent end \newline
+
+(26) \indent $\displaystyle lc = lc + 2 $ \newline
+
+(27) \indent for j=0 to n do \newline
+
+(28) \indent \indent $\displaystyle f \leftarrow f \cdot s \cdot (c^{-1})^q \cdot (c^{-1})^{q^2} \cdot (c^{-1})^{q^3} $ \newline
+
+(29) \indent \indent $\displaystyle l_{1..3} \leftarrow (P_{Q_j}[lc+i])_{i=0}^2 $ \newline
+
+(30) \indent \indent $\displaystyle f \leftarrow f \cdot l_1.evaluate(P_{j}) \cdot l_2.evaluate(P_{j}) \cdot l_3.evaluate(P_{j}) $ \newline
+
+(31) \indent \indent if $Q_j$ is not fixed then \newline
+
+(32) \indent \indent \indent $\displaystyle Q_1 \leftarrow \pi_p(Q), Q_12\leftarrow \pi_p(Q_1), Q_3 \leftarrow \pi_p(Q_2) $ \newline
+
+(33) \indent \indent \indent $\displaystyle T \leftarrow T[j] $ \newline
+
+(34) \indent \indent \indent assert $\displaystyle l_1.is_line(T, Q_1); T \leftarrow T + Q_1 $ \newline
+
+(35) \indent \indent \indent assert $\displaystyle l_2.is_line(T, -Q_2); T \leftarrow T - Q_1 $ \newline
+
+(36) \indent \indent \indent assert $\displaystyle l_3.is_line(T, Q_3) $ \newline
+
+(37) \indent \indent end \newline
+
+(38) \indent end \newline
+
+(39) end \newline
+
+(40) return $\displaystyle f == 1? $ \newline
+
+if We adopt this algorithm into Groth16, The whole algorithm process should be like this:
+
+$\displaystyle P_1 = [msm]_1; Q_1 = -[\gamma]_2 $
+
+$\displaystyle P_2 = [C]_1; Q_2 = -[\delta]_2 $
+
+$\displaystyle P_3 = [\alpha]_1; Q_3 = -[\beta]_2 $
+
+$\displaystyle P_4 = [A]_1; Q_4 = [B]_2 $
+
+$Q_4$ is non-fixed, $Q_1$, $Q_2$, and $Q_3$ is fixed.
+
+Input: $\displaystyle A = [(P_1,Q_1), (P_2,Q_2), (P_3,Q_3),(P_4,Q_4)],c, c^{-1} \in F_{q^k},s \in F_{q^3},P_{Q_4} \leftarrow \mathcal{L}(Q_4)$ \newline
+
+Output: $\displaystyle 1 \ \ if \prod_{i=0}^{n}e(P_i, Q_i) = 1 $ \newline
+
+(1) assert $\displaystyle c \cdot c^{-1} = 1 $ \newline
+
+(2) $\displaystyle f \leftarrow c^(-1), lc \leftarrow 0 $ \newline
+
+(3) Initialize array $T$ such that $\displaystyle T[j] = Q_j $ for each non-fixed point $Q_j$ \newline
+
+(4) for $i$ = $L-2$ to $0$ do \newline
+
+(5) \indent $f$ = $f^2$ \newline
+
+(6) \indent \indent $\displaystyle f = f \cdot c^{-1}$ if $bit$ == 1 else $\displaystyle f \cdot c$ end \newline
+
+(7) \indent for j = 1 to 4 do \newline
+
+(7) \indent \indent $\displaystyle l \leftarrow P_{Q_j}[lc] $ \newline
+
+(8) \indent \indent $\displaystyle f = f \cdot l.evaluate(P_j) $ \newline 
+
+(8) \indent end \newline
+
+(9) \indent $Q_4$ is not fixed then \newline
+
+(8) \indent $\displaystyle f = f \cdot l.evaluate(P_4) $ \newline 
+
+(10) \indent $\displaystyle T \leftarrow T[j] $ \newline
+
+(11) \indent assert $\displaystyle l.is_tangent(T) $ \newline
+
+(12) \indent $\displaystyle T[j] = l.double(T) $ \newline
+
+(14) \indent if $bit == 1$ or $bit == -1 $ then \newline
+
+(7) \indent \indent for j = 1 to 4 do \newline
+
+(7) \indent \indent \indent $\displaystyle l \leftarrow P_{Q_j}[lc + 1] $ \newline
+
+(8) \indent \indent \indent $\displaystyle f = f \cdot l.evaluate(P_j) $ \newline 
+
+(8) \indent \indent end \newline
+
+(18) \indent \indent $Q_4$ is not fixed then \newline
+
+(16) \indent \indent  $\displaystyle l \leftarrow P_{Q_j}[lc+1] $ \newline
+
+(17) \indent \indent  $\displaystyle f = f \cdot l.evaluate(P_{j})$ \newline
+
+(19) \indent \indent  $\displaystyle Q^{'} = Q_j $ if $bit$ == 1 else $\displaystyle -Q_j $ \newline
+
+(20) \indent \indent  $\displaystyle T \leftarrow T[j] $ \newline
+
+(21) \indent \indent  assert $\displaystyle l.is_line(T, Q^{'}) $ \newline
+
+(22) \indent \indent  $\displaystyle T[j] = l.add(T, Q^{'}) $ \newline
+
+(24) \indent  end \newline
+
+(28) \indent  $\displaystyle f \leftarrow f \cdot s \cdot (c^{-1})^q \cdot c^{q^2} $ \newline
+
+(7) \indent \indent for j = 1 to 4 do \newline
+
+(30) \indent \indent $\displaystyle f \leftarrow f \cdot l_1.evaluate(P_{j}) $ \newline
+
+(7) \indent \indent end \newline
+
+(31) \indent \indent $Q_4$ is not fixed then \newline
+
+(32) \indent \indent  $\displaystyle Q_1 \leftarrow \pi_p(Q), Q_12\leftarrow \pi_p(Q_1), Q_3 \leftarrow \pi_p(Q_2) $ \newline
+
+(33) \indent \indent  $\displaystyle T \leftarrow T[j] $ \newline
+
+(34) \indent \indent  assert $\displaystyle l_1.is_line(T, Q_1); T \leftarrow T + Q_1 $ \newline
+
+(35) \indent \indent  assert $\displaystyle l_2.is_line(T, -Q_2); T \leftarrow T - Q_1 $ \newline
+
+(36) \indent \indent  assert $\displaystyle l_3.is_line(T, Q_3) $ \newline
+
+(38) \indent end \newline
+
+(39) end \newline
+
+(40) return $\displaystyle f == 1? $ \newline
