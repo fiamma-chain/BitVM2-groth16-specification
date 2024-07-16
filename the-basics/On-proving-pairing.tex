@@ -2,91 +2,92 @@
 
 This is a efficient ways to prove correctness of elliptic curve pairing relations, the algorithm shows in page 25:
 
-Algorithm 9: Multi Miller loop with embedded $c$ exponentiation \newline
+Algorithm 9: Multi Miller loop with embedded $c$ exponentiation 
 
-Input: $\displaystyle A = [(P_1,Q_1), (P_2,Q_2),...,(P_n,Q_n)],c, c^{-1} \in F_{q^k},s \in F_{q^3},P_{Q_j} \leftarrow \mathcal{L}(Q_j)$ \newline
+Input: $\displaystyle A = [(P_1,Q_1), (P_2,Q_2),...,(P_n,Q_n)],c, c^{-1} \in F_{q^k},s \in F_{q^3},P_{Q_j} \leftarrow \mathcal{L}(Q_j)$ 
 
-Output: $\displaystyle 1 \ \ if \prod_{i=0}^{n}e(P_i, Q_i) = 1 $ \newline
+Output: $\displaystyle 1 \ \ if \prod_{i=0}^{n}e(P_i, Q_i) = 1 $ 
 
-(1) assert $\displaystyle c \cdot c^{-1} = 1 $ \newline
+(1) assert $\displaystyle c \cdot c^{-1} = 1 $ 
 
-(2) $\displaystyle f \leftarrow c^(-1), lc \leftarrow 0 $ \newline
+(2) $\displaystyle f \leftarrow c^(-1), lc \leftarrow 0 $ 
 
-(3) Initialize array $T$ such that $\displaystyle T[j] = Q_j $ for each non-fixed point $Q_j$ \newline
+(3) Initialize array $T$ such that $\displaystyle T[j] = Q_j $ for each non-fixed point $Q_j$ 
 
-(4) for $i$ = $L-2$ to $0$ do \newline
+(4) for $i$ = $L-2$ to $0$ do 
 
-(5) \indent $f$ = $f^2$ \newline
+(5) \indent $f$ = $f^2$ 
 
-(6) \indent for j=1 to n do \newline
+(6) \indent for j=1 to n do 
 
-(7) \indent \indent $\displaystyle l \leftarrow P_{Q_j}[lc] $ \newline
+(7) \indent \indent $\displaystyle l \leftarrow P_{Q_j}[lc] $ 
 
-(8) \indent \indent $\displaystyle f = f \cdot l.evaluate(P_j) $ \newline 
+(8) \indent \indent $\displaystyle f = f \cdot l.evaluate(P_j) $  
 
-(9) \indent \indent if $Q_j$ is not fixed then \newline
+(9) \indent \indent if $Q_j$ is not fixed then 
 
-(10) \indent \indent \indent $\displaystyle T \leftarrow T[j] $ \newline
+(10) \indent \indent \indent $\displaystyle T \leftarrow T[j] $ 
 
-(11) \indent \indent \indent assert $\displaystyle l.is_tangent(T) $ \newline
+(11) \indent \indent \indent assert $\displaystyle l.is_tangent(T) $ 
 
-(12) \indent \indent \indent $\displaystyle T[j] = l.double(T) $ \newline
+(12) \indent \indent \indent $\displaystyle T[j] = l.double(T) $ 
 
-(13) \indent \indent end \newline
+(13) \indent \indent end 
 
-(14) \indent \indent if $bit^2 == 1$ then \newline
+(14) \indent \indent if $bit^2 == 1$ then 
 
-(15) \indent \indent \indent $\displaystyle f = f \cdot c^{-1}$ if $bit$ == 1 else $\displaystyle f \cdot c$ end \newline
+(15) \indent \indent \indent $\displaystyle f = f \cdot c^{-1}$ if $bit$ == 1 else $\displaystyle f \cdot c$ end 
 
-(16) \indent \indent \indent $\displaystyle l \leftarrow P_{Q_j}[lc+1] $ \newline
+(16) \indent \indent \indent $\displaystyle l \leftarrow P_{Q_j}[lc+1] $ 
 
-(17) \indent \indent \indent $\displaystyle f = f \cdot l.evaluate(P_{j})$ \newline
+(17) \indent \indent \indent $\displaystyle f = f \cdot l.evaluate(P_{j})$ 
 
-(18) \indent \indent \indent if $Q_j$ is not fixed then \newline
+(18) \indent \indent \indent if $Q_j$ is not fixed then 
 
-(19) \indent \indent \indent \indent $\displaystyle Q^{'} = Q_j $ if $bit$ == 1 else $\displaystyle -Q_j $ \newline
+(19) \indent \indent \indent \indent $\displaystyle Q^{'} = Q_j $ if $bit$ == 1 else $\displaystyle -Q_j $ 
 
-(20) \indent \indent \indent $\displaystyle T \leftarrow T[j] $ \newline
+(20) \indent \indent \indent $\displaystyle T \leftarrow T[j] $ 
 
-(21) \indent \indent \indent assert $\displaystyle l.is_line(T, Q^{'}) $ \newline
+(21) \indent \indent \indent assert $\displaystyle l.is_line(T, Q^{'}) $ 
 
-(22) \indent \indent \indent $\displaystyle T[j] = l.add(T, Q^{'}) $ \newline
+(22) \indent \indent \indent $\displaystyle T[j] = l.add(T, Q^{'}) $ 
 
-(23) \indent \indent \indent end \newline
+(23) \indent \indent \indent end 
 
-(24) \indent \indent end \newline
+(24) \indent \indent end 
 
-(25) \indent end \newline
+(25) \indent end 
 
-(26) \indent $\displaystyle lc = lc + 2 $ \newline
+(26) \indent $\displaystyle lc = lc + 2 $ 
 
-(27) \indent for j=0 to n do \newline
+(27) \indent for j=0 to n do 
 
-(28) \indent \indent $\displaystyle f \leftarrow f \cdot s \cdot (c^{-1})^q \cdot (c^{-1})^{q^2} \cdot (c^{-1})^{q^3} $ \newline
+(28) \indent \indent $\displaystyle f \leftarrow f \cdot s \cdot (c^{-1})^q \cdot (c^{-1})^{q^2} \cdot (c^{-1})^{q^3} $ 
 
-(29) \indent \indent $\displaystyle l_{1..3} \leftarrow (P_{Q_j}[lc+i])_{i=0}^2 $ \newline
+(29) \indent \indent $\displaystyle l_{1..3} \leftarrow (P_{Q_j}[lc+i])_{i=0}^2 $ 
 
-(30) \indent \indent $\displaystyle f \leftarrow f \cdot l_1.evaluate(P_{j}) \cdot l_2.evaluate(P_{j}) \cdot l_3.evaluate(P_{j}) $ \newline
+(30) \indent \indent $\displaystyle f \leftarrow f \cdot l_1.evaluate(P_{j}) \cdot l_2.evaluate(P_{j}) \cdot l_3.evaluate(P_{j}) $ 
 
-(31) \indent \indent if $Q_j$ is not fixed then \newline
+(31) \indent \indent if $Q_j$ is not fixed then 
 
-(32) \indent \indent \indent $\displaystyle Q_1 \leftarrow \pi_p(Q), Q_12\leftarrow \pi_p(Q_1), Q_3 \leftarrow \pi_p(Q_2) $ \newline
+(32) \indent \indent \indent $\displaystyle Q_1 \leftarrow \pi_p(Q), Q_12\leftarrow \pi_p(Q_1), Q_3 \leftarrow \pi_p(Q_2) $ 
 
-(33) \indent \indent \indent $\displaystyle T \leftarrow T[j] $ \newline
+(33) \indent \indent \indent $\displaystyle T \leftarrow T[j] $ 
 
-(34) \indent \indent \indent assert $\displaystyle l_1.is_line(T, Q_1); T \leftarrow T + Q_1 $ \newline
+(34) \indent \indent \indent assert $\displaystyle l_1.is_line(T, Q_1); T \leftarrow T + Q_1 $ 
 
-(35) \indent \indent \indent assert $\displaystyle l_2.is_line(T, -Q_2); T \leftarrow T - Q_1 $ \newline
+(35) \indent \indent \indent assert $\displaystyle l_2.is_line(T, -Q_2); T \leftarrow T - Q_1 $ 
 
-(36) \indent \indent \indent assert $\displaystyle l_3.is_line(T, Q_3) $ \newline
+(36) \indent \indent \indent assert $\displaystyle l_3.is_line(T, Q_3) $ 
 
-(37) \indent \indent end \newline
+(37) \indent \indent end 
 
-(38) \indent end \newline
+(38) \indent end 
 
-(39) end \newline
+(39) end 
 
-(40) return $\displaystyle f == 1? $ \newline
+(40) return $\displaystyle f == 1? $ 
+
 
 if We adopt this algorithm into Groth16, The whole algorithm process should be like this:
 
@@ -98,90 +99,92 @@ $\displaystyle P_3 = [\alpha]_1; Q_3 = -[\beta]_2 $
 
 $\displaystyle P_4 = [A]_1; Q_4 = [B]_2 $
 
+
 $Q_4$ is non-fixed, $Q_1$, $Q_2$, and $Q_3$ is fixed.
 
-Input: $\displaystyle A = [(P_1,Q_1), (P_2,Q_2), (P_3,Q_3),(P_4,Q_4)],c, c^{-1} \in F_{q^k},s \in F_{q^3},P_{Q_4} \leftarrow \mathcal{L}(Q_4)$ \newline
 
-Output: $\displaystyle 1 \ \ if \prod_{i=0}^{n}e(P_i, Q_i) = 1 $ \newline
+Input: $\displaystyle A = [(P_1,Q_1), (P_2,Q_2), (P_3,Q_3),(P_4,Q_4)],c, c^{-1} \in F_{q^k},s \in F_{q^3},P_{Q_4} \leftarrow \mathcal{L}(Q_4)$ 
 
-(1) assert $\displaystyle c \cdot c^{-1} = 1 $ \newline
+Output: $\displaystyle 1 \ \ if \prod_{i=0}^{n}e(P_i, Q_i) = 1 $ 
 
-(2) $\displaystyle f \leftarrow c^(-1), lc \leftarrow 0 $ \newline
+(1) assert $\displaystyle c \cdot c^{-1} = 1 $ 
 
-(3) Initialize array $T$ such that $\displaystyle T[j] = Q_j $ for each non-fixed point $Q_j$ \newline
+(2) $\displaystyle f \leftarrow c^(-1), lc \leftarrow 0 $ 
 
-(4) for $i$ = $L-2$ to $0$ do \newline
+(3) Initialize array $T$ such that $\displaystyle T[j] = Q_j $ for each non-fixed point $Q_j$ 
 
-(5) \indent $f$ = $f^2$ \newline
+(4) for $i$ = $L-2$ to $0$ do 
 
-(6) \indent \indent $\displaystyle f = f \cdot c^{-1}$ if $bit$ == 1 else $\displaystyle f \cdot c$ end \newline
+(5) \indent $f$ = $f^2$ 
 
-(7) \indent for j = 1 to 4 do \newline
+(6) \indent \indent $\displaystyle f = f \cdot c^{-1}$ if $bit$ == 1 else $\displaystyle f \cdot c$ end 
 
-(7) \indent \indent $\displaystyle l \leftarrow P_{Q_j}[lc] $ \newline
+(7) \indent for j = 1 to 4 do 
 
-(8) \indent \indent $\displaystyle f = f \cdot l.evaluate(P_j) $ \newline 
+(7) \indent \indent $\displaystyle l \leftarrow P_{Q_j}[lc] $ 
 
-(8) \indent end \newline
+(8) \indent \indent $\displaystyle f = f \cdot l.evaluate(P_j) $  
 
-(9) \indent $Q_4$ is not fixed then \newline
+(8) \indent end 
 
-(8) \indent $\displaystyle f = f \cdot l.evaluate(P_4) $ \newline 
+(9) \indent $Q_4$ is not fixed then 
 
-(10) \indent $\displaystyle T \leftarrow T[j] $ \newline
+(8) \indent $\displaystyle f = f \cdot l.evaluate(P_4) $  
 
-(11) \indent assert $\displaystyle l.is_tangent(T) $ \newline
+(10) \indent $\displaystyle T \leftarrow T[j] $ 
 
-(12) \indent $\displaystyle T[j] = l.double(T) $ \newline
+(11) \indent assert $\displaystyle l.is_tangent(T) $ 
 
-(14) \indent if $bit == 1$ or $bit == -1 $ then \newline
+(12) \indent $\displaystyle T[j] = l.double(T) $ 
 
-(7) \indent \indent for j = 1 to 4 do \newline
+(14) \indent if $bit == 1$ or $bit == -1 $ then 
 
-(7) \indent \indent \indent $\displaystyle l \leftarrow P_{Q_j}[lc + 1] $ \newline
+(7) \indent \indent for j = 1 to 4 do 
 
-(8) \indent \indent \indent $\displaystyle f = f \cdot l.evaluate(P_j) $ \newline 
+(7) \indent \indent \indent $\displaystyle l \leftarrow P_{Q_j}[lc + 1] $ 
 
-(8) \indent \indent end \newline
+(8) \indent \indent \indent $\displaystyle f = f \cdot l.evaluate(P_j) $  
 
-(18) \indent \indent $Q_4$ is not fixed then \newline
+(8) \indent \indent end 
 
-(16) \indent \indent  $\displaystyle l \leftarrow P_{Q_j}[lc+1] $ \newline
+(18) \indent \indent $Q_4$ is not fixed then 
 
-(17) \indent \indent  $\displaystyle f = f \cdot l.evaluate(P_{j})$ \newline
+(16) \indent \indent  $\displaystyle l \leftarrow P_{Q_j}[lc+1] $ 
 
-(19) \indent \indent  $\displaystyle Q^{'} = Q_j $ if $bit$ == 1 else $\displaystyle -Q_j $ \newline
+(17) \indent \indent  $\displaystyle f = f \cdot l.evaluate(P_{j})$ 
 
-(20) \indent \indent  $\displaystyle T \leftarrow T[j] $ \newline
+(19) \indent \indent  $\displaystyle Q^{'} = Q_j $ if $bit$ == 1 else $\displaystyle -Q_j $ 
 
-(21) \indent \indent  assert $\displaystyle l.is_line(T, Q^{'}) $ \newline
+(20) \indent \indent  $\displaystyle T \leftarrow T[j] $ 
 
-(22) \indent \indent  $\displaystyle T[j] = l.add(T, Q^{'}) $ \newline
+(21) \indent \indent  assert $\displaystyle l.is_line(T, Q^{'}) $ 
 
-(24) \indent  end \newline
+(22) \indent \indent  $\displaystyle T[j] = l.add(T, Q^{'}) $ 
 
-(28) \indent  $\displaystyle f \leftarrow f \cdot s \cdot (c^{-1})^q \cdot c^{q^2} $ \newline
+(24) \indent  end 
 
-(7) \indent \indent for j = 1 to 4 do \newline
+(28) \indent  $\displaystyle f \leftarrow f \cdot s \cdot (c^{-1})^q \cdot c^{q^2} $ 
 
-(30) \indent \indent $\displaystyle f \leftarrow f \cdot l_1.evaluate(P_{j}) $ \newline
+(7) \indent \indent for j = 1 to 4 do 
 
-(7) \indent \indent end \newline
+(30) \indent \indent $\displaystyle f \leftarrow f \cdot l_1.evaluate(P_{j}) $ 
 
-(31) \indent \indent $Q_4$ is not fixed then \newline
+(7) \indent \indent end 
 
-(32) \indent \indent  $\displaystyle Q_1 \leftarrow \pi_p(Q), Q_12\leftarrow \pi_p(Q_1), Q_3 \leftarrow \pi_p(Q_2) $ \newline
+(31) \indent \indent $Q_4$ is not fixed then 
 
-(33) \indent \indent  $\displaystyle T \leftarrow T[j] $ \newline
+(32) \indent \indent  $\displaystyle Q_1 \leftarrow \pi_p(Q), Q_12\leftarrow \pi_p(Q_1), Q_3 \leftarrow \pi_p(Q_2) $ 
 
-(34) \indent \indent  assert $\displaystyle l_1.is_line(T, Q_1); T \leftarrow T + Q_1 $ \newline
+(33) \indent \indent  $\displaystyle T \leftarrow T[j] $ 
 
-(35) \indent \indent  assert $\displaystyle l_2.is_line(T, -Q_2); T \leftarrow T - Q_1 $ \newline
+(34) \indent \indent  assert $\displaystyle l_1.is_line(T, Q_1); T \leftarrow T + Q_1 $ 
 
-(36) \indent \indent  assert $\displaystyle l_3.is_line(T, Q_3) $ \newline
+(35) \indent \indent  assert $\displaystyle l_2.is_line(T, -Q_2); T \leftarrow T - Q_1 $ 
 
-(38) \indent end \newline
+(36) \indent \indent  assert $\displaystyle l_3.is_line(T, Q_3) $ 
 
-(39) end \newline
+(38) \indent end 
 
-(40) return $\displaystyle f == 1? $ \newline
+(39) end 
+
+(40) return $\displaystyle f == 1? $ 

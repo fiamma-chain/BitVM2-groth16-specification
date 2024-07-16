@@ -1,15 +1,12 @@
 \subsection{Limitations-on-bitcoin-script}
 
-The remaining sections of this paper are summarized as follows:
+There are some constraints we have to take into account:
 \begin{itemize}
-    \item Section \ref{sec:overview-of-vm} mainly describes the design of the virtual machine of OlaVM, which is the basis for OlaVM to obtain smaller execution traces and state transition constraints;
-    \item Section \ref{sec:overview-of-zkvm-architecture} mainly describes the design of OlaVM constraints, covering the design idea of OlaVM architecture;
-    \item Section \ref{sec:structure-of-execution-trace-table} mainly describes the data structure of execution traces and the structure description of related sub-traces;
-    \item Section \ref{sec:circuit-constraint} mainly describes the underlying constraints of OlaVM, primarily constraints relating to the instruction set;
-    \item Section \ref{sec:builtins} mainly describes the custom constraints supported in OlaVM, called Builtins;
-    \item Section \ref{sec:storage-module} mainly describes the account model used in OlaVM and the corresponding constraint logic;
-    \item Section \ref{sec:integer-arithmetic-operation} mainly describes uint256 integer calculation logic supported in OlaVM;
-    \item Section \ref{sec:zk-without-fft} mainly describes the principle of ZK without FFT algorithm;
-    \item Section \ref{sec:zk-acceleration} mainly describes MSM algorithm and the design framework of FPGA-accelerated MSM;
-    \item Section \ref{sec:key-technologies} mainly describes the key technologies used in the entire design of OlaVM.
+    \item Max script size: 4MB;
+    \item Max stack depth: 1000 (main stack + alt stack);
+    \item Max stack item size: 520 bytes
+    \item 1 bit signature size: 26 bytes with Winternitz;
 \end{itemize}
+
+As the signature is much big now, so we plan to use economic games to reduce the risk of being malicious in our first version.
+We wil give clarification on this later.

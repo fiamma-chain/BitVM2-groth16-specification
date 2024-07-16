@@ -1,9 +1,0 @@
-\section{Builtins} \label{sec:builtins}
-
-From a prover's perspective, the difficulty of different function modules in a ZKVM varies, hence, we are utilizing a modular architecture, decoupling the different modules to the maximum extent possible. When dealing with complex modules, the circuit scale vastly grows in size increasing the cost of the proof, in addition to potentially not being frequently used, creating inefficiencies. We utilize builtins to enhance this. Through Plookup technology we are able to store the circuit overhead upon usage, enabling us to flexibly handling the overhead problem of complex circuits.
-
-\input{builtins/range-check}
-\input{builtins/bitwise}
-\input{builtins/sinsemilla-hash}
-\input{builtins/comparison}
-\input{builtins/signature}
