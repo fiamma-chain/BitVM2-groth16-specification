@@ -1,0 +1,26 @@
+\subsection{Transaction constructure}
+
+The transaction constructure of Bitcoin show in the following excel.
+
+\begin{tabular}{|c|c|c|} \hline
+    Field & Size & Description \\ \hline
+    Version & 4 bytes & The version number for the transaction. Used to enable new features  \\ \hline
+    \textcolor{blue}{Maker} & 1 bytes & Used to indicate a segwit transaction. Must be 00 \\ \hline
+    \textcolor{blue}{Flag} & 1 bytes & Used to indicate a segwit transaction. Must be 01 or greater  \\ \hline
+    Input Count & Variable & Indicates the number of inputs  \\ \hline
+    Input-TXID & 32 bytes & The TXID of the transaction containing the output you want to spend  \\ \hline
+    Input-VOUT & 4 bytes & The index number of the output you want to spend  \\ \hline
+    Input-ScriptSig Size & Variable & The size in bytes of the upcoming ScriptSig  \\ \hline
+    Input-ScriptSig & Variable & The unlocking code for the output you want to spend  \\ \hline
+    Input-Sequnencer & 4 bytes & Set whether the transaction can be replaced or when it can be mined  \\ \hline
+    Output Count & Variable & Indicates the number of outputs  \\ \hline
+    Output-Amount & 8 bytes & The value of the output in satoshis  \\ \hline
+    Output-ScriptPubKey Size & Variable & The size in bytes of the upcoming ScriptPubKey  \\ \hline
+    Output-ScriptPubKey & Variable bytes & The locking code for this output  \\ \hline
+    \textcolor{blue}{Witness-Stack Items} & Variable & The number of items to be pushed on to the stack as part of the unlocking code.  \\ \hline
+    \textcolor{blue}{Witness-Stack Items-Size} & Variable & The size of the upcoming stack item  \\ \hline
+    \textcolor{blue}{Witness-Stack Items-Item} & Variable & The data to be pushed on to the stack  \\ \hline
+    Locktime & 4 bytes & Set a time or height after which the transaction can be mined  \\ \hline
+\end{tabular}
+
+The \textcolor{blue}{blue} part means it will be stored in segwit part. Any one could check more details in \cite{website:transaction-constructure}
