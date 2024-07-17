@@ -1,0 +1,232 @@
+\subsection{split-code}
+
+\lstdefinestyle{mystyle}{
+    % backgroundcolor=\color{backcolour},		% 背景色   
+    keywordstyle= \color{ blue!70},			% 关键字/程序语言中的保留字颜色
+    commentstyle= \color{red!50!green!50!blue!50},		% 程序中注释的颜色
+    % commentstyle= \color[RGB]{40, 400, 255}
+    numberstyle=\tiny\color{codegray},		% 左侧行号显示的颜色
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,		% 对过长的代码自动换行                
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,		% 在左侧显示行号                 
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,		% 不显示字符串中的空格
+    showtabs=false,                  
+    tabsize=2,
+    % frame=none,		% 不显示边框
+    frame=shadowbox,	% 边框阴影
+    %   escapebegin=\begin{CJK*},escapeend=\end{CJK*},      % 代码中出现中文必须加上，否则报错
+}
+
+\subsubsection{$F_{q12} : a \cdot b$}
+
+\begin{lstlisting}
+
+    % Split Fq12 mul into small scripts. For each script
+    % size < 4M && max_stack_used < 1000
+    % Input: a0, a1, b0, b1
+    %
+    % Algorithm:
+    %     Final_a0 = a0 * b0 + a1 * b1 * \gamma
+    %     Final_a1 = (a0 + a1) * (b0 + b1) - (a0 * b0 + a1 * b1)
+    pub fn split_mul() -> Vec<Script> {
+        % The degree-12 extension on BN254 Fq6 is under the polynomial z^2 - y
+
+        let mut res = vec![];
+
+        res.push(script! {
+            % a0, b0
+            { Fq6::mul(6, 0) }
+            % a0 * b0
+        });
+
+        res.push(script! {
+            % a1, b1
+            { Fq6::mul(6, 0) }
+            % a1 * b1
+        });
+
+        res.push(script! {
+            % a0 * b0, a1 * b1, a0, a1, b0, b1,
+            { Fq6::add(6, 0) }
+            % a0 * b0, a1 * b1, a0, a1, b0 + b1,
+            { Fq6::add(12, 6) }
+            % a0 * b0, a1 * b1, b0 + b1, a0 + a1,
+            { Fq6::mul(6, 0) }
+            % a0 * b0, a1 * b1, (a0 + a1) * (b0 + b1)
+            { Fq6::copy(12) }
+            % a0 * b0, a1 * b1, (a0 + a1) * (b0 + b1), a0 * b0
+            { Fq6::copy(12) }
+            % a0 * b0, a1 * b1, (a0 + a1) * (b0 + b1), a0 * b0, a1 * b1
+            { Fq12::mul_fq6_by_nonresidue() }
+            % a0 * b0, a1 * b1, (a0 + a1) * (b0 + b1), a0 * b0, a1 * b1 * \gamma
+            % z^2 - \gamma = 0
+            { Fq6::add(6, 0) }
+            % a0 * b0, a1 * b1, (a0 + a1) * (b0 + b1), a0 * b0 + a1 * b1 * \gamma
+            { Fq6::add(18, 12)}
+            % (a0 + a1) * (b0 + b1), a0 * b0 + a1 * b1 * \gamma, a0 * b0 + a1 * b1
+            { Fq6::sub(12, 0) }
+            % a0 * b0 + a1 * b1 * \gamma, (a0 + a1) * (b0 + b1) - (a0 * b0 + a1 * b1)
+        });
+
+        res
+    }
+
+\end{lstlisting}
+
+\subsubsection{$F_{q12} : frobenius\_map(1)$}
+
+\begin{lstlisting}
+
+    pub fn split_frobenius_map(i: usize) -> Vec<Script> {
+        let mut res = vec![];
+        if i == 1 {
+            % [p.c0, p.c1]
+            res.push(script! {
+                { Fq6::frobenius_map(i) }
+                { Fq6::roll(6) }
+                { Fq6::frobenius_map(i) }
+                % [p.c1 ^ p^i, p.c0 ^ p^i]
+            });
+            % [p.c1 ^ p^i]
+            res.push(Fq6::mul_by_fp2_constant(
+                &ark_bn254::Fq12Config::FROBENIUS_COEFF_FP12_C1
+                    [i % ark_bn254::Fq12Config::FROBENIUS_COEFF_FP12_C1.len()],
+            ));
+        } else {
+            res.push(Self::frobenius_map(i));
+        }
+
+        res
+    }
+\end{lstlisting}
+
+\subsubsection{$F_{q12}: mul\_by\_034$}
+
+\begin{lstlisting}
+
+    pub fn split_mul_by_034() -> Vec<Script> {
+        let mut res = vec![];
+
+        % compute b = p.c1 * (c3, c4)
+        % [p.c1, c3, c4]
+        res.push(Fq6::mul_by_01());
+        % [b]
+
+        % [c0, c3, b, p.c0, p.c1]
+        % [Fq2, Fq2, Fq6, Fq6, Fq6]
+        res.push(script! {
+            % compute a = c0 * p.c0
+            { Fq6::copy(6) }
+            % [c0, c3, b, p.c0, p.c1, p.c0]
+            { Fq2::copy(26) }
+            % [c0, c3, b, p.c0, p.c1, p.c0, c0]
+            { Fq6::mul_by_fp2() }
+            % [c0, c3, b, p.c0, p.c1, c0 * p.c0]
+            % [c0, c3, b, p.c0, p.c1, a]
+            % compute gamma * b
+            { Fq6::roll(18) }
+            % [c0, c3, p.c0, p.c1, a, b]
+            { Fq12::mul_fq6_by_nonresidue() }
+            % [c0, c3, p.c0, p.c1, a, b * gamma]
+
+            % compute final c0 = a + gamma * b
+            % [c0, c3, p.c0, p.c1, a, b * gamma]
+            { Fq6::copy(6) }
+            % [c0, c3, p.c0, p.c1, a, b * gamma, a]
+            { Fq6::add(6, 0) }
+            % [c0, c3, p.c0, p.c1, a, a + b * gamma]
+            % [c0, c3, p.c0, p.c1, a, final_c0]
+
+            % compute e = p.c0 + p.c1
+            { Fq6::add(18, 12) }
+            % [c0, c3, a, final_c0, p.c0 + p.c1]
+            % [c0, c3, a, final_c0, e]
+
+            % compute c0 + c3
+            { Fq2::add(20, 18) }
+            % [a, final_c0, e, c0 + c3]
+        });
+
+        % [b, a, final_c0, e, c0 + c3, c4]
+        res.push(script! {
+            % update e = e * (c0 + c3, c4)
+            { Fq6::mul_by_01() }
+            % [b, a, final_c0, e]
+
+            % sum a and b
+            { Fq6::add(18, 12) }
+            % [final_c0, e, b + a]
+
+            % compute final c1 = e - (a + b)
+            { Fq6::sub(6, 0) }
+            % [final_c0, e - (b + a)]
+            % [final_c0, final_c1]
+        });
+
+        res
+    }
+    
+\end{lstlisting}
+
+
+\subsubsection{$F_{q12}: mul\_by\_constant$}
+
+\begin{lstlisting}
+
+    pub fn split_mul_by_034_with_4_constant(constant: &ark_bn254::Fq2) -> Vec<Script> {
+        let mut res = vec![];
+
+        % [p.c1, c3], constant = c4
+        res.push(Fq6::mul_by_01_with_1_constant(constant));
+
+        % compute a = p.c0 * c0
+        % Input: [p.c0, c0]
+        % Output: [p.c0 * c0]
+        res.push(Fq6::mul_by_fp2());
+
+        % [c0, c3, p.c0, p.c1, a, b]
+        res.push(script! {
+            { Fq6::copy(0) }
+            % [c0, c3, p.c0, p.c1, a, b, b]
+            % compute beta * b
+            { Fq12::mul_fq6_by_nonresidue() }
+            % [c0, c3, p.c0, p.c1, a, b, b * beta]
+
+            % compute final c0 = a + beta * b
+            { Fq6::copy(12) }
+            % [c0, c3, p.c0, p.c1, a, b, b * beta, a]
+            { Fq6::add(6, 0) }
+            % [c0, c3, p.c0, p.c1, a, b, a + beta * b]
+            % [c0, c3, p.c0, p.c1, a, b, final_c0]
+
+            % compute e = p.c0 + p.c1
+            { Fq6::add(24, 18) }
+            % [c0, c3, a, b, final_c0, e]
+
+            % compute c0 + c3
+            { Fq2::add(26, 24) }
+            % [a, b, final_c0, e, c0 + c3]
+
+            % update e = e * (c0 + c3, c4)
+            { Fq6::mul_by_01_with_1_constant(constant) }
+            % [a, b, final_c0, e]
+
+            % sum a and b
+            { Fq6::add(18, 12) }
+            % [final_c0, e, a + b]
+
+            % compute final c1 = e - (a + b)
+            { Fq6::sub(6, 0) }
+            % [final_c0, final_c1]
+        });
+
+        res
+    }
+
+\end{lstlisting}
