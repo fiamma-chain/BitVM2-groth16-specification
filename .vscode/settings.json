@@ -1,0 +1,9 @@
+{
+    "editor.trimAutoWhitespace": true,
+    "files.insertFinalNewline": true,
+    "files.trimFinalNewlines": true,
+    "editor.tabSize": 4,
+    "[bibtex]": {
+        "editor.tabSize": 2
+    }
+}

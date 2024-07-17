@@ -1,1 +1,1 @@
-# BitVM2-groth16-specification
+Groth16 specification on BiTVM2

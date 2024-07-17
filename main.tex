@@ -1,0 +1,44 @@
+\documentclass[table]{elegantpaper}
+\usepackage{datetime2}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{listings-rust}
+\usepackage{pgf-pie}
+\usepackage{rotating}
+\usepackage{tabularray}
+\usepackage{tabularx}
+\usepackage{xcolor}
+
+\DTMusemodule{english}{en-GB}
+\DTMnewdatestyle{short}{
+  \renewcommand{\DTMdisplaydate}[4]{
+    \DTMenglishmonthname{##2} \number##1\relax
+  }
+  \renewcommand{\DTMDisplaydate}{\DTMdisplaydate}
+}
+\newcommand{\shorttoday}{{\DTMsetdatestyle{short}\today}}
+\renewcommand{\updatetext}{}
+
+\graphicspath{{./images/}}
+\DeclareEmphSequence{\bfseries,\itshape,\upshape}
+\lstset{xleftmargin=\parindent,xrightmargin=\parindent}
+
+\title{Groth16 Implementment Specification in BitVM2}
+\author{Fiamma \thanks{\url{https://twitter.com/Fiamma_Chain}}}
+\date{\shorttoday}
+
+\addbibresource[location=local]{reference.bib}
+
+\begin{document}
+    \maketitle
+    \input{abstract}
+    \tableofcontents
+    \input{the-basics/main}
+    \input{bench-data/main}
+    \input{split-pricinple/main}
+    \input{optimization-pricinple/main}
+    \input{split-data/main}
+    \input{summary}
+    \printbibliography[heading=bibintoc, title=\ebibname]
+\end{document}
