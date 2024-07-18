@@ -10,22 +10,27 @@ We give some initial bench data we test in current implement first. Including:
 
 \subsubsection{G1 group}
 
+\begin{center}
 \begin{tabular}{|c|c|c|c|} \hline
 operator typr & script size & max depth & exceed 4M? \\ \hline
 $2 \cdot g_1$ & 1,752,916 bytes & 131 & no  \\ \hline
 $g_1 \cdot g_1^{'}$ & 3,997,319 bytes &	< 1000 & no \\ \hline
 \end{tabular}
+\end{center}
 
 \subsubsection{G2 group}
 
+\begin{center}
 \begin{tabular}{|c|c|c|c|} \hline
 operator typr & script size & max depth & exceed 4M? \\ \hline
 $2 \cdot g_2$ & \textcolor{red}{7,019891} bytes & 815 & yes  \\ \hline
 $g_2 \cdot g_2^{'}$ & \textcolor{red}{9,270,854} bytes &	293 & yes \\ \hline
 \end{tabular}
+\end{center}
 
 \subsubsection{field}
 
+\begin{center}
 \begin{tabular}{|c|c|c|c|} \hline
 operator typr & script size & max depth & exceed 4M? \\ \hline
 $F_{q12}: a + b$ & 6,644 bytes & 220 & no  \\ \hline
@@ -46,4 +51,5 @@ $F_{q6}: mul\_by\_fp2$ & 2,252,362 bytes &	167 & no \\ \hline
 $F_{q2}: a * b$ & 750,883 bytes & 113 & no \\ \hline
 
 \end{tabular}
+\end{center}
 
