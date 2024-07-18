@@ -9,6 +9,7 @@
 \usepackage{tabularray}
 \usepackage{tabularx}
 \usepackage{xcolor}
+\usepackage{endnotes}
 
 \DTMusemodule{english}{en-GB}
 \DTMnewdatestyle{short}{
@@ -24,8 +25,8 @@
 \DeclareEmphSequence{\bfseries,\itshape,\upshape}
 \lstset{xleftmargin=\parindent,xrightmargin=\parindent}
 
-\title{Groth16 Implementment Specification in BitVM2}
-\author{Fiamma \thanks{\url{https://twitter.com/Fiamma_Chain}}}
+\title{Groth16 Implement Specification in BitVM2}
+\author{Fiamma \endnote{\url{https://twitter.com/Fiamma_Chain}}}
 \date{\shorttoday}
 
 \addbibresource[location=local]{reference.bib}
@@ -33,12 +34,14 @@
 \begin{document}
     \maketitle
     \input{abstract}
+    \pagebreak
     \tableofcontents
-    \input{the-basics/main}
-    \input{bench-data/main}
-    \input{split-pricinple/main}
-    \input{optimization-pricinple/main}
-    \input{split-data/main}
+    \pagebreak
+    \input{basics/main}
+    \input{script/bench-data/main}
+    \input{script/split-pricinple/main}
+    \input{script/optimization-pricinple/main}
+    \input{script/split-data/main}
     \input{summary}
     \printbibliography[heading=bibintoc, title=\ebibname]
 \end{document}
