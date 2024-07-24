@@ -1,10 +1,10 @@
 \subsection{Block-size-calculation}
 
-It would be better know that how we calculate the Bitcoin block size based on taproot upgrade now.
+Understanding how Bitcoin block size is calculated post-Taproot upgrade is crucial.
 
 \subsubsection{block size}
 
-The block size will be calculated as the following picture:
+The block size calculation is depicted in the following illustration:
 
 \begin{figure}[ht] 
     \centering  
@@ -15,7 +15,7 @@ The block size will be calculated as the following picture:
 
 \subsubsection{transaction size}
 
-The transaction size will be calculated as the following picture:
+The transaction size calculation is illustrated below:
 
 \begin{figure}[ht] 
     \centering  
@@ -24,7 +24,7 @@ The transaction size will be calculated as the following picture:
     \label{fig:transaction-size}
 \end{figure}
 
-You can check more details in \cite{website:transaction-size}
+For more detailed information, refer to source in \cite{website:transaction-size}
 
 \subsubsection{script chunk limitation}
 
@@ -45,4 +45,3 @@ So the limitation will be 3,999,216 - 7 * 75 - 8(stack item size) = 3,998,683 we
     \caption{ZKP script chunk limitation}
     \label{fig:ZKP-script-chunk-limitation}
 \end{figure}
-

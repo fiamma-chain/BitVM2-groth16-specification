@@ -1,12 +1,8 @@
 \subsection{Limitations-on-bitcoin-script}
 
-There are some constraints we have to take into account:
+Several constraints must be considered:
 \begin{itemize}
-    \item Max script size: 4MB;
-    \item Max stack depth: 1000 (main stack + alt stack);
-    \item Max stack item size: 520 bytes
-    \item 1 bit signature size: 26 bytes with Winternitz;
+    \item Max script size: 4MB
+    \item Max stack depth: 1000 (combined main stack and alternate stack);
+    \item Max signatures number in one block: 1000 Winternitz signatures;
 \end{itemize}
-
-As the signature is much big now, so we plan to use economic games to reduce the risk of being malicious in our first version.
-We wil give clarification on this later.
