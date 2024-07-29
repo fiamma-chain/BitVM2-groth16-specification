@@ -2,9 +2,9 @@
 
 Pairings can be computed over elliptic curves represented in any coordinate system, but popular choices have been homogeneous projective and affine coordinates, depending on the ratio between inversion and multiplication.
 
-\subsubsection{Homogeneous Projective coordinates} 
-The choice of projective coordinates has proven especially advantageous at the 128-bit security level for single pairing
-computation, due to the typically large inversion/multiplication ratio in this setting. The tangent line evaluated at
+\subsubsection{Homogeneous projective coordinates} 
+The choice of projective coordinates has proven particularly advantageous at the 128-bit security level for single pairing
+computation, due to the typically high inversion/multiplication ratio in this setting. The tangent line evaluated at
 $ P = (x_P , y_P)$ can be computed with the following formula:
 
 \begin{equation}
@@ -13,9 +13,10 @@ $ P = (x_P , y_P)$ can be computed with the following formula:
 
 \subsubsection{Affine coordinates} 
 
-The choice of affine coordinates has proven more useful at higher security levels and embedding degrees, due to the action of the norm
-map on simplifying the computation of inverses at higher extensions. The main advantages of affine coordinates are the simplicity of implementation and
-format of the line functions, allowing faster accumulation inside the Miller loop if the additional sparsity is exploited.
+The choice of affine coordinates has proven more useful at higher security levels and embedding degrees, primarily due to 
+the norm map's role in simplifying the computation of inverses at higher extensions. The main advantages of affine coordinates 
+lie in their ease of implementation and the straightforward format of the line functions. These features enable faster 
+accumulation within the Miller loop, particularly when additional sparsity is exploited.
 
 If $ T = (x_1, y_1)$ is a point in $E^t(F_{p2})$, one can compute the point $ 2T := T + T $ with the following formula:
 
@@ -23,5 +24,5 @@ If $ T = (x_1, y_1)$ is a point in $E^t(F_{p2})$, one can compute the point $ 2T
     (1 / y_p)g_{2\phi(T)}(P) = 1 + (-x_p/y_p)\lambda w + (1 / y_p)(\lambda x_1 - y_1)w^3
 \end{equation}
 
-you can read this paper \cite{website:The-realm-of-the-pairings} to know more deatils about this, we big thanks to all contributors of 
-PR \cite{website:PR} in BitVM2 \cite{website:BitVM2}.
+You can read this paper \cite{website:The-realm-of-the-pairings} for more details on this topic. 
+We extend our heartfelt thanks to all contributors of the PR \cite{website:PR} in BitVM2 \cite{website:BitVM2}.
