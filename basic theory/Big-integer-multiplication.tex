@@ -1,0 +1,26 @@
+\subsection{Big integer multiplication}
+
+\subsubsection{Montgomery reduction}
+
+Montgomery reduction \cite{website:Montgomery}, also known as REDC, is an algorithm that simultaneously computes the product by $R'$ and 
+reduces modulo $N$ more quickly than the naïve method. Unlike conventional modular reduction, 
+which focuses on making the number smaller than $N$, Montgomery reduction focuses on making the number more divisible by $R$. 
+It does this by adding a small multiple of $N$ which is sophisticatedly chosen to cancel the residue modulo $R$. 
+Dividing the result by $R$ yields a much smaller number. 
+This number is so much smaller that it is nearly the reduction modulo $N$, and 
+computing the reduction modulo $N$ requires only a final conditional subtraction. 
+Because all computations are done using only reduction and divisions with respect to $R$, not $N$, the algorithm runs faster than
+a straightforward modular reduction by division.
+
+
+\subsubsection{Karatsuba multiplication}
+Karatsuba multiplication \cite{website:Karatsuba} is a divide-and-conquer algorithm for (non-modular) multiplication, which for n-bit integers reduces cost from the $O(n^2)$
+for classical multiplication to $O(n^{\log_2^3})$, that is $O(n^{1.58…})$.
+
+Applied to modular exponentiation with n-bit numbers including exponent, the cost goes from $O(n^3)$ to $O(n^{1+log_2^3})$
+, that is $O(n^{2.58…})$. One of several methods for getting the benefits of Karatsuba multiplication during modular reduction is pre-computing the (non-modular) 
+inverse of the modulus to slightly more than n bits, which can be done at cost $O(n^2)$ (thus negligible as far as $O$
+ is concerned) with classical algorithms.
+
+Karatsuba multiplication can be used together with Montgomery reduction. We highly appreciate at the work \cite{website:PR75} of Robin and Zerosync team. It reduce
+the script size of multiplication to around 55\% of native version.

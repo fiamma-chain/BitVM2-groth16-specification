@@ -1,8 +1,8 @@
-\subsection{Block-size-calculation}
+\subsubsection{Block-size-calculation}
 
 Understanding how Bitcoin block size is calculated post-Taproot upgrade is crucial.
 
-\subsubsection{block size}
+\paragraph*{block size}
 
 The block size calculation is depicted in the following illustration:
 
@@ -13,7 +13,7 @@ The block size calculation is depicted in the following illustration:
     \label{fig:block-size}
 \end{figure}
 
-\subsubsection{transaction size}
+\paragraph*{transaction size}
 
 The transaction size calculation is illustrated below:
 
@@ -26,7 +26,7 @@ The transaction size calculation is illustrated below:
 
 For more detailed information, refer to source in \cite{website:transaction-size}
 
-\subsubsection{script chunk limitation}
+\paragraph*{script chunk limitation}
 
 Based on the deign of BitVM2 \cite{website:BitVM2}, we hope each script chunk could be packed into one block as a transaction.
 So, the transaction size could not exceed 4,000,000 - 320 = 3,999,680 weight units \cite{website:transaction-size}.

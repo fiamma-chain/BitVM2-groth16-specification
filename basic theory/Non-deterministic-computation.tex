@@ -1,10 +1,19 @@
-\subsection{group-g1}
+\subsection{Non-deterministic-computation}
 
-It needs more opcodes if we implement the double or add operator in $G_1$ directly because there are some divison operators which
-is not bitcoin-friendly. We obey the rules proposed in paper On Proving pairing.
+We reference this concept from cairo-vm \cite{website:cairo-vm}, in one word: the prover
+may do additional work that is not part of the proven computation.
 
+What if we want to compute a square root of a certain
+number x as part of a larger function? The deterministic approach is to use
+some square-root algorithm to compute $ y = \sqrt{x} $ which means we need to
+include its execution trace in our script. But the nondeterministic approach
+is much more efficient: the prover computes the square-root y using the
+same algorithm, but does not include this computation in the script. Instead, the only thing the script proved is that y
+2 = x, which can be done using a single SQUARE script gadget.
 
-\subsubsection{Double}
+We adapt this concept with double and add operations based on $G_1$ and $G_2$
+
+\subsubsection{Double in $G_1$ and $G_2$}
 
 \begin{itemize}
     \item Show that the pair ($\lambda$, $\mu$), indeed define a tangent through $T$ showing that $\displaystyle y_1 - \lambda x_{1} - mu = 0$ 
@@ -13,7 +22,7 @@ is not bitcoin-friendly. We obey the rules proposed in paper On Proving pairing.
     \item Compute $\displaystyle x_3 = \lambda^2-2x_1$ and $\displaystyle 2\lambda y_3 = -\mu - \lambda x_3$ which is dominated by computing $\lambda x_3$
 \end{itemize}
 
-\subsubsection{Add}
+\subsubsection{Add in $G_1$ and $G_2$}
 
 \begin{itemize}
     \item Show that the pair ($\lambda$, $\mu$), indeed define a tangent through $T$ showing that $\displaystyle y_1 - \lambda x_{1} - mu = 0$ 
