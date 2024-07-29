@@ -1,12 +1,11 @@
 \subsection{Split data} \label{sec:split-data}
 
-We give the result directly how we split the script which the size exceeds the 4M limitation. As we showed in the \ref{sec:bench-data},
-
-There only have some operations of $F_{q12}$ need to be split after we optimize the operations for $G_1$ and $G_2$
+We present the results directly on how we split the script whose size exceeds the 4M limitation, as demonstrated in \ref{sec:benchmark data},
+there are only some operations of $F_{q12}$ that need to be split after we optimize the operations for $G_1$ and $G_2$
 
 \begin{center}
 \begin{tabular}{|c|c|c|c|} \hline
-    operator typr & script size & max depth & exceed 4M? \\ \hline
+    operator type & script size & max depth & exceed 4M? \\ \hline
     $F_{q12}: a * b$ & \textcolor{red}{11,641,775} bytes & 545 & yes \\ \hline
     $F_{q12}: frobenius\_map(1)$ & \textcolor{red}{4,541,887} bytes & - & yes \\ \hline
     $F_{q12}: mul\_by\_034$ & \textcolor{red}{9,810,459} bytes & - & yes \\ \hline
@@ -15,12 +14,12 @@ There only have some operations of $F_{q12}$ need to be split after we optimize 
 \end{center}
 
 
-We will show how we split these 4 big script one by one, as we split it manually, we try our best to satifying the following property cocurrently:
+We will demonstrate how we manually split these four large scripts one by one, striving to satisfy the following properties concurrently:
 
 \begin{itemize}
-    \item Doesn't exceed the limitation of size and stack depth;
-    \item Keeping the size of input and output is minimal;
-    \item Try our best to make logic of each chunk is readable; 
+    \item Ensuring that size and stack depth limitations are not exceeded;
+    \item Minimizing the size of inputs and outputs;
+    \item Making the logic of each chunk as clear and readable as possible; 
 \end{itemize}
 
 \input{script/split-data/split-code}

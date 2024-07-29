@@ -1,6 +1,6 @@
-\subsubsection{operators-script-size-origin}
+\subsubsection{Operators script size origin}
 
-We give some initial bench data we test in current implement first. Including:
+We will first present some initial benchmark data from our current implementation, including:
 
 \begin{itemize}
     \item Double and Add operators in $G_1$ group;
@@ -12,7 +12,7 @@ We give some initial bench data we test in current implement first. Including:
 
 \begin{center}
 \begin{tabular}{|c|c|c|c|} \hline
-operator typr & script size & max depth & exceed 4M? \\ \hline
+operator type & script size & max depth & exceed 4M? \\ \hline
 $2 \cdot g_1$ & 1,752,916 bytes & 131 & no  \\ \hline
 $g_1 \cdot g_1^{'}$ & 3,997,319 bytes &	< 1000 & no \\ \hline
 \end{tabular}
@@ -22,7 +22,7 @@ $g_1 \cdot g_1^{'}$ & 3,997,319 bytes &	< 1000 & no \\ \hline
 
 \begin{center}
 \begin{tabular}{|c|c|c|c|} \hline
-operator typr & script size & max depth & exceed 4M? \\ \hline
+operator type & script size & max depth & exceed 4M? \\ \hline
 $2 \cdot g_2$ & \textcolor{red}{7,019891} bytes & 815 & yes  \\ \hline
 $g_2 \cdot g_2^{'}$ & \textcolor{red}{9,270,854} bytes &	293 & yes \\ \hline
 \end{tabular}
@@ -32,7 +32,7 @@ $g_2 \cdot g_2^{'}$ & \textcolor{red}{9,270,854} bytes &	293 & yes \\ \hline
 
 \begin{center}
 \begin{tabular}{|c|c|c|c|} \hline
-operator typr & script size & max depth & exceed 4M? \\ \hline
+operator type & script size & max depth & exceed 4M? \\ \hline
 $F_{q12}: a + b$ & 6,644 bytes & 220 & no  \\ \hline
 $F_{q12}: 2 * a$ & 6,793 bytes & 217 & no \\ \hline
 $F_{q12}: a * b$ & \textcolor{red}{11,641,775} bytes & 545 & yes \\ \hline

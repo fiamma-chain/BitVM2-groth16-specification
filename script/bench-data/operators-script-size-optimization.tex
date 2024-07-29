@@ -1,7 +1,7 @@
-\subsubsection{operators-script-size-optimization}
+\subsubsection{Operator script size optimization}
 
-The less script chunks, the better. So before we split the big operators, we want to optimize them first. We will give our new
-data first and then clarification the pricinple.
+The fewer script chunks, the better. Therefore, before we split the large operators, we aim to optimize them first. We will present our new 
+data initially, followed by an explanation of the principle.
 
 \begin{itemize}
     \item Double and Add operators in $G_1$ group;
@@ -13,7 +13,7 @@ data first and then clarification the pricinple.
 
 \begin{center}
 \begin{tabular}{|c|c|c|c|} \hline
-operator typr & script size & optimized script size & exceed 4M? \\ \hline
+operator type & script size & optimized script size & exceed 4M? \\ \hline
 $2 \cdot g_1$ & 1,752,916 bytes & \textcolor{green}{1,251,319} bytes & no  \\ \hline
 $g_1 \cdot g_1^{'}$ & 3,997,319 bytes &	\textcolor{green}{1,001,977} bytes & no \\ \hline
 \end{tabular}
@@ -23,7 +23,7 @@ $g_1 \cdot g_1^{'}$ & 3,997,319 bytes &	\textcolor{green}{1,001,977} bytes & no 
 
 \begin{center}
 \begin{tabular}{|c|c|c|c|} \hline
-operator typr & script size & optimized script size & exceed 4M? \\ \hline
+operator type & script size & optimized script size & exceed 4M? \\ \hline
 $2 \cdot g_2$ & \textcolor{red}{7,019891} bytes & \textcolor{green}{3,262,334} bytes & yes  \\ \hline
 $g_2 \cdot g_2^{'}$ & \textcolor{red}{9,270,854} bytes & \textcolor{green}{2,761,898} bytes & yes \\ \hline
 \end{tabular}
@@ -33,7 +33,7 @@ $g_2 \cdot g_2^{'}$ & \textcolor{red}{9,270,854} bytes & \textcolor{green}{2,761
 
 \begin{center}
 \begin{tabular}{|c|c|c|c|} \hline
-operator typr & script size & max depth & exceed 4M? \\ \hline
+operator type & script size & max depth & exceed 4M? \\ \hline
 $F_{q12}: a + b$ & 6,644 bytes & 220 & no  \\ \hline
 $F_{q12}: 2 * a$ & 6,793 bytes & 217 & no \\ \hline
 $F_{q12}: a * b$ & \textcolor{red}{11,641,775} bytes & 545 & yes \\ \hline

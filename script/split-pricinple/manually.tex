@@ -1,18 +1,19 @@
 \subsubsection{manually}
 
-Why do we select a manually way to split the whole program?
+Why do we select a manual way to split the entire program?
 
 \begin{itemize}
-    \item It is not easy to exceed the stack depth limitation as we just put data into stack which is needed by current chunk ;
-    \item It only committes data which only used in current chunk;
+    \item We avoid exceeding the stack depth limitation by only placing necessary data for the current chunk on the stack;
+    \item We commit only the data used in the current chunk;
     \item We just need to implement gadgets to support ZKP verification as any computaion could generate a ZK proof;
-    \item Executing the rust program to generate the input and output of each chunk;
-    \item It keeps the lowest costs when verify the expected input and output on chain;
+    \item We use a Rust program to generate the input and output for each chunk;
+    \item This approach minimizes costs when verifying the expected input and output on-chain;
     \item The logic of each chunk is readable;
 \end{itemize}
 
-This approach maybe generate more chunks, but just like we said before, there will only one script chunk executed on Bitcoin. So it's acceptable.
-The overall flow of manually fragment as follow pictures:
+While this approach may generate more chunks, as mentioned earlier, only one script chunk is executed on Bitcoin, so this is acceptable. 
+The overall manual fragmentation process is illustrated in the following figure:
+
 \begin{figure}[ht] 
     \centering  
     \includegraphics[width=0.85\columnwidth]{images/manually-fragment.png} 
@@ -20,12 +21,12 @@ The overall flow of manually fragment as follow pictures:
     \label{fig:manually-fragment}
 \end{figure}
 
-The overall flow shoule be as follows:
+The overall flow proceeds as follows:
 \begin{itemize}
-    \item We implememnt the rust version and script version of Groth16 ZKP verification cocurrently first;
-    \item The rust verion includes the witness generation of each chunk;
-    \item The script verion includes all chunks we split;
-    \item We keep each chunk satisfies the size constraint and depth constraint;
-    \item The Node A execute the rust program locally to generates input and output for each chunk;
-    \item The Node A committes all the inputs and outputs;
+    \item We first concurrently implement the Rust and script versions of the Groth16 ZKP verification;
+    \item The rust version includes the witness generation of each chunk;
+    \item The script version includes all split chunks;
+    \item We ensure each chunk meets the size and depth constraints;
+    \item Node A executes the Rust program locally to generate inputs and outputs for each chunk;
+    \item Node A commits all the inputs and outputs;
 \end{itemize}

@@ -1,10 +1,10 @@
 \subsubsection{Block-size-calculation}
 
-Understanding how Bitcoin block size is calculated post-Taproot upgrade is crucial.
+Understanding the calculation of Bitcoin block size following the Taproot upgrade is essential.
 
 \paragraph*{block size}
 
-The block size calculation is depicted in the following illustration:
+The following illustration depicts the block size calculation:
 
 \begin{figure}[ht] 
     \centering  
@@ -24,17 +24,17 @@ The transaction size calculation is illustrated below:
     \label{fig:transaction-size}
 \end{figure}
 
-For more detailed information, refer to source in \cite{website:transaction-size}
+For more detailed information, please refer to \cite{website:transaction-size}
 
 \paragraph*{script chunk limitation}
 
-Based on the deign of BitVM2 \cite{website:BitVM2}, we hope each script chunk could be packed into one block as a transaction.
+Based on the design of BitVM2 \cite{website:BitVM2}, We aim for each script chunk to be packed into one block as a transaction.
 So, the transaction size could not exceed 4,000,000 - 320 = 3,999,680 weight units \cite{website:transaction-size}.
 
-The disputed transaction is a 1 input and 2 outputs, the average size of non-witness data in this kind of transaction is around 464 weight units.
-So for the witness size, the limitation is 3,999,680 - 464 = 3,999,216 weight units.
+A disputed transaction, characterized by 1 input and 2 outputs, typically has an average non-witness data size of approximately 464 weight units. 
+Consequently, the witness size limitation for such transactions is calculated as 3,999,680 - 464 = 3,999,216 weight units.
 
-As showed in BitVM2 \cite{website:BitVM2}, the disputed transaction needs to the signature of Committee, and the sign type is
+As outlined in BitVM2 \cite{website:BitVM2}, the disputed transaction needs the signature of Committee, and the signature type is
 SIGNHASH\_SINGLE. Let's assume that the number of Committee is 7 and the size of each schnorr signature is 65 bytes (64 bytes for SIGNHASH\_ALL)
 
 So the limitation will be 3,999,216 - 7 * 75 - 8(stack item size) = 3,998,683 weight units.
