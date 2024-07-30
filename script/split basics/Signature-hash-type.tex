@@ -1,11 +1,14 @@
 \subsubsection{Signature-hash-type}
 
-Signature Hash Types:
+A SIGNHASH \cite{website:signhash} flag is used to indicate which part of the transaction is signed. 
+The mechanism provides a flexibility in constructing transactions. 
+There are in total 6 different flag combinations that can be added to a digital signature in a transaction. 
+
 \begin{itemize}
-    \item 0x01 = SIGHASH\_ALL
-    \item 0x02 = SIGHASH\_NONE
-    \item 0x03 = SIGHASH\_SINGLE
-    \item 0x81 = SIGHASH\_ANYONECANPAY | SIGHASH\_ALL
-    \item 0x82 = SIGHASH\_ANYONECANPAY | SIGHASH\_NONE
-    \item 0x83 = SIGHASH\_ANYONECANPAY | SIGHASH\_SINGLE
+    \item 0x01 = SIGHASH\_ALL : Sign all inputs and outputs
+    \item 0x02 = SIGHASH\_NONE : Sign all inputs and no output
+    \item 0x03 = SIGHASH\_SINGLE : Sign all inputs and the output with the same index
+    \item 0x81 = SIGHASH\_ANYONECANPAY | SIGHASH\_ALL : Sign its own input and all outputs
+    \item 0x82 = SIGHASH\_ANYONECANPAY | SIGHASH\_NONE : Sign its own input and no output
+    \item 0x83 = SIGHASH\_ANYONECANPAY | SIGHASH\_SINGLE : Sign its own input and the output with the same index
 \end{itemize}
