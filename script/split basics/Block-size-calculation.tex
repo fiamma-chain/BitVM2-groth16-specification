@@ -1,7 +1,7 @@
 \subsubsection{Block size calculation}
 Understanding the calculation of Bitcoin block size following the Taproot upgrade is essential.
 
-\paragraph{block size} 
+\paragraph{Block size} 
 
 The following illustration depicts the block size calculation:
 
@@ -12,7 +12,7 @@ The following illustration depicts the block size calculation:
     \label{fig:block-size}
 \end{figure}
 
-\paragraph*{transaction size} 
+\paragraph*{Transaction size} 
 
 The transaction size calculation is illustrated below:
 
@@ -25,7 +25,7 @@ The transaction size calculation is illustrated below:
 
 For more detailed information, please refer to \cite{website:transaction-size}
 
-\paragraph*{script chunk limitation} 
+\paragraph*{Script chunk limitation} 
 
 Based on the design of BitVM2 \cite{website:BitVM2}, We aim for each script chunk to be packed into one block as a transaction.
 So, the transaction size could not exceed 4,000,000 - 320 = 3,999,680 weight units \cite{website:transaction-size}.

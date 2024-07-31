@@ -1,4 +1,4 @@
-\subsubsection{manually}
+\subsubsection{Manual}
 
 Why do we select a manual way to split the entire program?
 
@@ -8,16 +8,16 @@ Why do we select a manual way to split the entire program?
     \item We just need to implement gadgets to support ZKP verification as any computaion could generate a ZK proof;
     \item We use a Rust program to generate the input and output for each chunk;
     \item This approach minimizes costs when verifying the expected input and output on-chain;
-    \item The logic of each chunk is readable;
+    \item The logic of each chunk is readable.
 \end{itemize}
 
+
 While this approach may generate more chunks, as mentioned earlier, only one script chunk is executed on Bitcoin, so this is acceptable. 
-The overall manual fragmentation process is illustrated in the following figure:
 
 \begin{figure}[ht] 
     \centering  
     \includegraphics[width=0.85\columnwidth]{images/manually-fragment.png} 
-    \caption{manually fragment}
+    \caption{manual fragmentation}
     \label{fig:manually-fragment}
 \end{figure}
 
@@ -28,5 +28,5 @@ The overall flow proceeds as follows:
     \item The script version includes all split chunks;
     \item We ensure each chunk meets the size and depth constraints;
     \item Node A executes the Rust program locally to generate inputs and outputs for each chunk;
-    \item Node A commits all the inputs and outputs;
+    \item Node A commits all the inputs and outputs.
 \end{itemize}
