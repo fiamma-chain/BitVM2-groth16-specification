@@ -1,4 +1,4 @@
-\subsubsection{split-code}
+\subsubsection{split code}
 
 \lstdefinestyle{mystyle}{
     keywordstyle= \color{ blue!70},			
@@ -19,210 +19,161 @@
     frame=shadowbox,	
 }
 
-\paragraph*{$F_{q12} : a \cdot b$}
+We will give an example to explain how the split process works based on $ Fn \ \ double\_ell\_affine() $, there have 2 types of code:
+\begin{itemize}
+    \item Split\_code: it will generate all subscripts;
+    \item Witness\_code: it will generate all inputs and outputs for all subscripts
+\end{itemize}
+
+\paragraph*{Split\_pseudocode}
 
 \begin{lstlisting}
 
-    % Split Fq12 mul into small scripts. For each script
-    % size < 4M && max_stack_used < 1000
-    % Input: a0, a1, b0, b1
-    %
-    % Algorithm:
-    %     Final_a0 = a0 * b0 + a1 * b1 * \gamma
-    %     Final_a1 = (a0 + a1) * (b0 + b1) - (a0 * b0 + a1 * b1)
-    pub fn split_mul() -> Vec<Script> {
-        % The degree-12 extension on BN254 Fq6 is under the polynomial z^2 - y
-
+    pub fn split_double_ell_affine() -> Vec<Script> {
         let mut res = vec![];
 
+        // [p.c0, p.c1, c3, c4, lamda, mu, Q.x, Q.y, 1]
+        // [p.c0, p.c1, c3, c4, x3, y3]
+        // [final_c0] | [y3, x3]
+        // [final_c0, x3, y3]
         res.push(script! {
-            % a0, b0
-            { Fq6::mul(6, 0) }
-            % a0 * b0
-        });
 
-        res.push(script! {
-            % a1, b1
-            { Fq6::mul(6, 0) }
-            % a1 * b1
-        });
+            { Pairing::double_line_g2_optimization() }
 
-        res.push(script! {
-            % a0 * b0, a1 * b1, a0, a1, b0, b1,
-            { Fq6::add(6, 0) }
-            % a0 * b0, a1 * b1, a0, a1, b0 + b1,
-            { Fq6::add(12, 6) }
-            % a0 * b0, a1 * b1, b0 + b1, a0 + a1,
-            { Fq6::mul(6, 0) }
-            % a0 * b0, a1 * b1, (a0 + a1) * (b0 + b1)
-            { Fq6::copy(12) }
-            % a0 * b0, a1 * b1, (a0 + a1) * (b0 + b1), a0 * b0
-            { Fq6::copy(12) }
-            % a0 * b0, a1 * b1, (a0 + a1) * (b0 + b1), a0 * b0, a1 * b1
-            { Fq12::mul_fq6_by_nonresidue() }
-            % a0 * b0, a1 * b1, (a0 + a1) * (b0 + b1), a0 * b0, a1 * b1 * \gamma
-            % z^2 - \gamma = 0
-            { Fq6::add(6, 0) }
-            % a0 * b0, a1 * b1, (a0 + a1) * (b0 + b1), a0 * b0 + a1 * b1 * \gamma
-            { Fq6::add(18, 12)}
-            % (a0 + a1) * (b0 + b1), a0 * b0 + a1 * b1 * \gamma, a0 * b0 + a1 * b1
-            { Fq6::sub(12, 0) }
-            % a0 * b0 + a1 * b1 * \gamma, (a0 + a1) * (b0 + b1) - (a0 * b0 + a1 * b1)
-        });
+            { Fq2::toaltstack() }
+            { Fq2::toaltstack() }
 
-        res
-    }
-
-\end{lstlisting}
-
-\paragraph*{$F_{q12} : frobenius\_map(1)$}
-
-\begin{lstlisting}
-
-    pub fn split_frobenius_map(i: usize) -> Vec<Script> {
-        let mut res = vec![];
-        if i == 1 {
-            % [p.c0, p.c1]
-            res.push(script! {
-                { Fq6::frobenius_map(i) }
-                { Fq6::roll(6) }
-                { Fq6::frobenius_map(i) }
-                % [p.c1 ^ p^i, p.c0 ^ p^i]
-            });
-            % [p.c1 ^ p^i]
-            res.push(Fq6::mul_by_fp2_constant(
-                &ark_bn254::Fq12Config::FROBENIUS_COEFF_FP12_C1
-                    [i % ark_bn254::Fq12Config::FROBENIUS_COEFF_FP12_C1.len()],
-            ));
-        } else {
-            res.push(Self::frobenius_map(i));
-        }
-
-        res
-    }
-\end{lstlisting}
-
-\paragraph*{$F_{q12}: mul\_by\_034$}
-
-\begin{lstlisting}
-
-    pub fn split_mul_by_034() -> Vec<Script> {
-        let mut res = vec![];
-
-        % compute b = p.c1 * (c3, c4)
-        % [p.c1, c3, c4]
-        res.push(Fq6::mul_by_01());
-        % [b]
-
-        % [c0, c3, b, p.c0, p.c1]
-        % [Fq2, Fq2, Fq6, Fq6, Fq6]
-        res.push(script! {
-            % compute a = c0 * p.c0
-            { Fq6::copy(6) }
-            % [c0, c3, b, p.c0, p.c1, p.c0]
-            { Fq2::copy(26) }
-            % [c0, c3, b, p.c0, p.c1, p.c0, c0]
-            { Fq6::mul_by_fp2() }
-            % [c0, c3, b, p.c0, p.c1, c0 * p.c0]
-            % [c0, c3, b, p.c0, p.c1, a]
-            % compute gamma * b
-            { Fq6::roll(18) }
-            % [c0, c3, p.c0, p.c1, a, b]
-            { Fq12::mul_fq6_by_nonresidue() }
-            % [c0, c3, p.c0, p.c1, a, b * gamma]
-
-            % compute final c0 = a + gamma * b
-            % [c0, c3, p.c0, p.c1, a, b * gamma]
-            { Fq6::copy(6) }
-            % [c0, c3, p.c0, p.c1, a, b * gamma, a]
-            { Fq6::add(6, 0) }
-            % [c0, c3, p.c0, p.c1, a, a + b * gamma]
-            % [c0, c3, p.c0, p.c1, a, final_c0]
-
-            % compute e = p.c0 + p.c1
-            { Fq6::add(18, 12) }
-            % [c0, c3, a, final_c0, p.c0 + p.c1]
-            % [c0, c3, a, final_c0, e]
-
-            % compute c0 + c3
-            { Fq2::add(20, 18) }
-            % [a, final_c0, e, c0 + c3]
-        });
-
-        % [b, a, final_c0, e, c0 + c3, c4]
-        res.push(script! {
-            % update e = e * (c0 + c3, c4)
+            // [p.c0, p.c1, c3, c4,]
+            // compute b = p.c1 * (c3, c4)
             { Fq6::mul_by_01() }
-            % [b, a, final_c0, e]
+            // [p, c3, c4, b]
 
-            % sum a and b
-            { Fq6::add(18, 12) }
-            % [final_c0, e, b + a]
+            // [p.c0, b]
+            { Fq12::mul_fq6_by_nonresidue() }
+            // [p.c0, b * beta]
 
-            % compute final c1 = e - (a + b)
-            { Fq6::sub(6, 0) }
-            % [final_c0, e - (b + a)]
-            % [final_c0, final_c1]
+            // compute final c0 = a + beta * b
+            { Fq6::add(6, 0) }
+
+            { Fq2::fromaltstack() }
+            { Fq2::fromaltstack() }
+
         });
 
+        // [c0, c3, c4, b, a, p.c0, p.c1, lamda, p.x, -mu, p.y]
+        // [c0, c3, c4, b, a, p.c0, p.c1, p.y, -mu, lamda * p.x]
+        // [c0, c3, c4, b, a, p.c0, p.c1, lamda * p.x, p.y * -mu]
+        // [c0, c3, c4, b, a, p.c0 + p.c1]
+        // [c3, c4, b, a, e, c0]
+        // [c4, b, a, e, c0, c3]
+        // [c4, b, a, e, c0 + c3]
+        // [b, a, e, c0 + c3, c4]
+        // [b, a, e]
+        // [e, a + b]
+        // [final_c1]
+        res.push(script! {
+
+            { Fq2::mul_by_fq(1, 0) }
+            { Fq2::copy(29) }
+            { Fq2::equalverify() }
+            { Fq2::mul_by_fq(1, 0) }
+            { Fq2::copy(28) }
+            { Fq2::equalverify() }
+
+            { Fq6::add(6, 0) }
+            { Fq2::roll(22) }
+            { Fq2::roll(22) }
+            { Fq2::add(2, 0) }
+            { Fq2::roll(20) }
+            { Fq6::mul_by_01() }
+            { Fq6::add(12, 6) }
+            { Fq6::sub(6, 0) }
+        });
+        unsafe {
+            FQ12_SPLIT_DOUBLE_ELL_COUNTER += 1;
+        }
         res
     }
-    
+
 \end{lstlisting}
 
-
-\paragraph*{$F_{q12}: mul\_by\_constant$}
+\paragraph*{Witness\_code}
 
 \begin{lstlisting}
 
-    pub fn split_mul_by_034_with_4_constant(constant: &ark_bn254::Fq2) -> Vec<Script> {
-        let mut res = vec![];
+    pub fn witness_add_ell_affine(
+        f: &Fq12,
+        p1: &ark_G1Affine,
+        affi_t4: &G2Affine,
+        affi_q4: &G2Affine,
+    ) -> (Fq12, Vec<ScriptContext>, G2Affine) {
+        let mut contexts = vec![];
+        //////////////////// script-1 ///////////////
+        // non-fixed (non-constant part) P4
+        let (lambda, mu, x3, y3) = Self::line_add_g2(affi_t4, affi_q4);
 
-        % [p.c1, c3], constant = c4
-        res.push(Fq6::mul_by_01_with_1_constant(constant));
+        let affi_t4_new = G2Affine::new(x3, y3);
 
-        % compute a = p.c0 * c0
-        % Input: [p.c0, c0]
-        % Output: [p.c0 * c0]
-        res.push(Fq6::mul_by_fp2());
+        let mut p = ark_G1Affine::new(p1.x, p1.y);
 
-        % [c0, c3, p.c0, p.c1, a, b]
-        res.push(script! {
-            { Fq6::copy(0) }
-            % [c0, c3, p.c0, p.c1, a, b, b]
-            % compute beta * b
-            { Fq12::mul_fq6_by_nonresidue() }
-            % [c0, c3, p.c0, p.c1, a, b, b * beta]
+        p.x = -p1.x / p1.y;
+        p.y = Fq::from(1) / p1.y;
+        //////////////////// script-1 ///////////////
+        let mut context = ScriptContext::default();
 
-            % compute final c0 = a + beta * b
-            { Fq6::copy(12) }
-            % [c0, c3, p.c0, p.c1, a, b, b * beta, a]
-            { Fq6::add(6, 0) }
-            % [c0, c3, p.c0, p.c1, a, b, a + beta * b]
-            % [c0, c3, p.c0, p.c1, a, b, final_c0]
+        let c0 = ark_bn254::Fq2::from(1);
 
-            % compute e = p.c0 + p.c1
-            { Fq6::add(24, 18) }
-            % [c0, c3, a, b, final_c0, e]
+        let mut c3 = lambda.clone();
+        c3.mul_assign_by_fp(&p.x);
 
-            % compute c0 + c3
-            { Fq2::add(26, 24) }
-            % [a, b, final_c0, e, c0 + c3]
+        let mut c4 = -mu.clone();
+        c4.mul_assign_by_fp(&p.y);
 
-            % update e = e * (c0 + c3, c4)
-            { Fq6::mul_by_01_with_1_constant(constant) }
-            % [a, b, final_c0, e]
+        let mut b = f.c1 as Fq6;
+        b.mul_by_01(&c3, &c4);
 
-            % sum a and b
-            { Fq6::add(18, 12) }
-            % [final_c0, e, a + b]
+        let mut a = f.c0 as Fq6;
+        a.mul_by_fp2(&c0);
 
-            % compute final c1 = e - (a + b)
-            { Fq6::sub(6, 0) }
-            % [final_c0, final_c1]
-        });
+        let mut beta_b = b;
+        <Fq12Config as Fp12Config>::mul_fp6_by_nonresidue_in_place(&mut beta_b);
 
-        res
+        let final_c0 = a + beta_b;
+
+        // fill inputs for subscript - 1
+        context
+            .inputs
+            .extend(f.c0.to_base_prime_field_elements().collect::<Vec<Fq>>());
+        ...
+        // fill outputs for subscript - 1
+        context
+            .outputs
+            .extend(final_c0.to_base_prime_field_elements().collect::<Vec<Fq>>());
+        ...
+
+        //////////////////// script-2 ///////////////
+        let mut context = ScriptContext::default();
+        // fill inputs for subscript - 2
+        context
+            .inputs
+            .extend(c0.to_base_prime_field_elements().collect::<Vec<Fq>>());
+        ...
+
+        let e = f.c0 + f.c1;
+        let mut e = e;
+        let c0_c1 = c0 + c3;
+        e.mul_by_01(&c0_c1, &c4);
+
+        let a_b = a + b;
+        let final_c1 = e - a_b;
+
+        // fill outputs for subscript - 2
+        context
+            .outputs
+            .extend(final_c1.to_base_prime_field_elements().collect::<Vec<Fq>>());
+        contexts.push(context);
+
+        (Fq12::new(final_c0, final_c1), contexts, affi_t4_new)
     }
 
 \end{lstlisting}

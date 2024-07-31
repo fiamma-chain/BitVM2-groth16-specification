@@ -1,24 +1,26 @@
-\subsubsection{split-result}
+\subsubsection{split result}
 
 We present the split result directly in the following table:
 
 \begin{center}
 \begin{tabular}{|c|c|c|c|c|} \hline
-    operator typr & chunks & script size & max depth & exceed 4M? \\ \hline
-    $F_{q12}: a * b$ & & \textcolor{red}{11,641,775} bytes & 545 & yes \\ \hline
-     & chunk0 & \textcolor{green}{11,641,775} bytes & 545 & no \\ \hline
-     & chunk1 & \textcolor{green}{11,641,775} bytes & 545 & no \\ \hline
-     & chunk2 & \textcolor{green}{11,641,775} bytes & 545 & no \\ \hline
-    $F_{q12}: frobenius\_map(1)$ & & \textcolor{red}{4,541,887} bytes & - & yes \\ \hline
-    & chunk0 & \textcolor{green}{11,641,775} bytes & 545 & no \\ \hline
-    & chunk1 & \textcolor{green}{11,641,775} bytes & 545 & no \\ \hline
-    $F_{q12}: mul\_by\_034$ & & \textcolor{red}{9,810,459} bytes & - & yes \\ \hline
-    & chunk0 & \textcolor{green}{11,641,775} bytes & 545 & no \\ \hline
-    & chunk1 & \textcolor{green}{11,641,775} bytes & 545 & no \\ \hline
-    & chunk2 & \textcolor{green}{11,641,775} bytes & 545 & no \\ \hline
-    $F_{q12}: ell\_by\_constant$ & & \textcolor{red}{9,525,050} bytes & 383 & yes \\ \hline
-    & chunk0 & \textcolor{green}{11,641,775} bytes & 545 & no \\ \hline
-    & chunk1 & \textcolor{green}{11,641,775} bytes & 545 & no \\ \hline
-    & chunk2 & \textcolor{green}{11,641,775} bytes & 545 & no \\ \hline
+    operator typr & subscript & script size & max depth & exceed 4M? \\ \hline
+    $F_{q12}: a * b$ & & \textcolor{red}{6,727,971} bytes & 545 & yes \\ \hline
+     & chunk0 & \textcolor{green}{ 3,085,202 } bytes & 545 & no \\ \hline
+     & chunk1 & \textcolor{green}{ 3,642,594} bytes & 545 & no \\ \hline
+    $F_{q12}: a * a$ & & \textcolor{red}{4,495,790} bytes & - & yes \\ \hline
+    & chunk0 & \textcolor{green}{2,246,763} bytes & 545 & no \\ \hline
+    & chunk1 & \textcolor{green}{2,249,027} bytes & 545 & no \\ \hline
+    $F_{q12}: doube_ell $ & & \textcolor{red}{6,416,951} bytes & - & yes \\ \hline
+    & chunk0 & \textcolor{green}{3,708,344} bytes & 545 & no \\ \hline
+    & chunk1 & \textcolor{green}{2,708,607} bytes & 545 & no \\ \hline
+    $F_{q12}: add_ell $ & & \textcolor{red}{6,415,463} bytes & - & yes \\ \hline
+    & chunk0 & \textcolor{green}{3,706,856} bytes & 545 & no \\ \hline
+    & chunk1 & \textcolor{green}{2,708,607} bytes & 545 & no \\ \hline
+    $F_{q12}: ell\_by\_constant$ & & \textcolor{red}{4,714,973} bytes & 383 & yes \\ \hline
+    & chunk0 & \textcolor{green}{2,568,521} bytes & 545 & no \\ \hline
+    & chunk1 & \textcolor{green}{2,145,297} bytes & 545 & no \\ \hline
 \end{tabular}
 \end{center}
+
+\textbf{Note: we combine Fq12\_ell and double\_g2, add\_g2 operation to get a smaller subscript number}
