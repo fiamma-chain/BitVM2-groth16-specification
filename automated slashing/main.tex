@@ -1,14 +1,12 @@
-\section{Automated slashing} \label{sec:automated-slashing}
+\section{Automated Slashing} \label{sec:automated-slashing}
 
-As Fiamma is a POS chain powered by Babylon, we refer to 2 important security properties proposed in the Babylon litepaper \cite{website:litepaper}.
+As a PoS chain powered by Babylon, Fiamma adheres to two critical security properties outlined in the Babylon litepaper \cite{website:litepaper}:
 
 \begin{itemize}
-    \item \textbf{Fully slashable PoS security}:  Whenever there is a safety violation, the Bitcoin stake is guaranteed to be slashed
-    \item \textbf{Staker security}: Each Bitcoin staker is guaranteed to be able to withdraw its funds, or unbond, as long as the staker follows the PoS protocol honestly
+    \item \textbf{Fully Slashable PoS Security}: In the event of a safety violation, the Bitcoin stake is guaranteed to be slashed.
+    \item \textbf{Staker Security}: Each Bitcoin staker can withdraw or unbond their funds as long as they adhere to the PoS protocol honestly.
 \end{itemize}
 
-Fiamma is a ZKP verification chain based on BitVM2. The core feature provides by BitVM2 is make the POS chain is slashable which satisfy the 1st property.
-We also provide another way to make the whole protocol satisfy the 2nd property as well, It's not the key point in this paper, we will give additional clarification
-in other ways.
+Fiamma is a ZKP verification chain utilizing BitVM2. A key functionality of BitVM2 is to enable slashing, thus fulfilling the first property. While the main focus of this paper is not on the second property, we provide an alternative method to ensure compliance with this property as well. Further details will be provided separately.
 
 \input{automated slashing/bitvm2}
