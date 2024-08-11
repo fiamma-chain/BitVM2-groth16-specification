@@ -1,7 +1,7 @@
 \subsection{Non-deterministic computation}
 
 We reference this concept from cairo-vm \cite{website:cairo-vm}. Simply put, the prover
-may do additional work that is not part of the proven computation.
+may do additional work that is not part of the prover computation.
 
 Consider the task of computing a square root of a number x as part of a larger function.
 The deterministic approach is to use some square-root algorithm to compute $ y = \sqrt{x} $ which means that we need to
@@ -9,12 +9,12 @@ include its execution trace in our script. In contrast, the nondeterministic app
 is much more efficient: the prover computes the square-root y using the
 same algorithm but does not include this computation in the script. Instead, the script only need to prove that is that y2 = x, which can be accomplished using a single SQUARE script gadget.
 
-We adapt this concept with double and add operations based on $G_1$ and $G_2$
+We adapt this concept with double and add operations based on $G_1$ and $G_2$.
 
 \subsubsection{Double in $G_1$ and $G_2$}
 
 \begin{itemize}
-    \item Show that the pair ($\lambda$, $\mu$), indeed defines a tangent through $T$, showing that $\displaystyle y_1 - \lambda x_{1} - mu = 0$ 
+    \item Show that the pair ($\lambda$, $\mu$) indeed defines a tangent through $T$, showing that $\displaystyle y_1 - \lambda x_{1} - mu = 0$ 
     and $\displaystyle 2\lambda y_1 = 3x_1^2$. This step is dominated by $2\tilde{m}$ and one $\tilde{s}$
     \item Compute $\lambda^2$ which is simple one $\tilde{s}$
     \item Compute $\displaystyle x_3 = \lambda^2-2x_1$ and $\displaystyle 2\lambda y_3 = -\mu - \lambda x_3$ which is dominated by computing $\lambda x_3$
