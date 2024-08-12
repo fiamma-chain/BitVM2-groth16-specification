@@ -1,7 +1,15 @@
 \subsection{Split data} \label{sec:split-data}
 
-We present the results directly on how we split the script whose size exceeds the 4M limitation, as demonstrated in \ref{sec:benchmark data},
+We present the results directly on how we split the script whose size exceeds the 4M limitation, as demonstrated in \ref{sec:benchmark-data},
 there are only some operations of $F_{q12}$ that need to be split after we optimize the operations for $G_1$ and $G_2$.
+
+We will demonstrate how we manually split these four large scripts one by one, striving to satisfy the following properties concurrently:
+
+\begin{itemize}
+    \item Ensuring that size and stack depth limitations are not exceeded;
+    \item Minimizing the size of inputs and outputs;
+    \item Making the logic of each chunk as clear and readable as possible; 
+\end{itemize}
 
 \begin{center}
 \begin{tabular}{|c|c|c|c|} \hline
@@ -12,15 +20,6 @@ there are only some operations of $F_{q12}$ that need to be split after we optim
     $F_{q12}: ell\_by\_constant$ & \textcolor{red}{9,525,050} bytes & 383 & yes \\ \hline    
 \end{tabular}
 \end{center}
-
-
-We will demonstrate how we manually split these four large scripts one by one, striving to satisfy the following properties concurrently:
-
-\begin{itemize}
-    \item Ensuring that size and stack depth limitations are not exceeded;
-    \item Minimizing the size of inputs and outputs;
-    \item Making the logic of each chunk as clear and readable as possible; 
-\end{itemize}
 
 \input{script/split-data/split-code}
 \input{script/split-data/split-result}

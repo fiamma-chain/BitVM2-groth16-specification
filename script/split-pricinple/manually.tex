@@ -11,17 +11,14 @@ Why do we adopt a manual way to split the entire program?
     \item The logic of each chunk is readable.
 \end{itemize}
 
-
-While this approach may generate more chunks, as mentioned earlier, only one script chunk is executed on Bitcoin, so this is acceptable. 
-
 \begin{figure}[ht] 
     \centering  
-    \includegraphics[width=0.85\columnwidth]{images/manually-fragment.png} 
+    \includegraphics[width=0.65\columnwidth]{images/manually-fragment.png} 
     \caption{manual fragmentation}
     \label{fig:manually-fragment}
 \end{figure}
 
-The overall flow proceeds as follows:
+While this approach may generate more chunks, as mentioned earlier, only one script chunk is executed on Bitcoin, so this is acceptable. The overall flow proceeds as follows:
 \begin{itemize}
     \item We first concurrently implement the Rust and script versions of the Groth16 ZKP verification;
     \item The rust version includes the witness generation of each chunk;
